@@ -7,24 +7,25 @@ const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const {currentIndex, setCurrentIndex} = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [savedCandidates, setSavedCandidates] = useState<Candidate[]>(() => {
     const saved = localStorage.getItem('savedCandidates');
     return saved ? JSON.parse(saved) : [];
   });
   const [noMoreCandidates, setNoMoreCandidates] = useState<boolean>(false);
-
-  const fetchCandidates = async (username:string) => {
+  
+  const fetchCandidate = async (username: string) => {
     setLoading(true);
     const user = await searchGithubUser(username);
-    const candidateData = Candidate ={
-      Name: user.name || "No Name",
-      Username: user.login || "No Username",
-      Avatar: user.avatar_url || "No Avatar",
-      Location: user.location || "No Location",
-      Email: user.email || "No Email",
-      Html_url: user.html_url || "No URL",
-      Company: user.company || "No Company",
+    console.log('User data:', user);
+    const candidateData: Candidate = {
+      Name: user.name || "No Name Provided",
+      Username: user.login ||"No userName Provided",
+      Location: user.location || "No Location Provided",
+      Avatar: user.avatar_url || "No Avatar Provided",
+      Email: user.email || "No Email Provided",
+      Html_url: user.html_url || "No URL Provided",
+      Company: user.company || "No Company Provided",
     };
     setCurrentCandidate(candidateData);
     setLoading(false);
@@ -34,27 +35,25 @@ const CandidateSearch = () => {
     const fetchCandidates = async () => {
       setLoading(true);
       const data = await searchGithub();
-      const transformedData = data.map((user:string) => ({
-        Name: user.name || "No Name",
-        Username: user.login || "No Username",
-        Avatar: user.avatar_url || "No Avatar",
-        Location: user.location || "No Location",
-        Email: user.email || "No Email",
-        Html_url: user.html_url || "No URL",
-        Company: user.company || "No Company",
+      const transformedData = data.map((user: any) => ({
+        Name: user.name || "No Name Provided",
+        Username: user.login || "No Login Provided",
+        Location: user.location || "No Location Provided",
+        Avatar: user.avatar_url || "No Avatar Provided",
+        Email: user.email || "No Email Provided",
+        Html_url: user.html_url || "No URL Provided",
+        Company: user.company || "No Company Provided",
       }));
       setCandidates(transformedData);
       setLoading(false);
 
+      // Fetch detailed data for the first candidate
       if (transformedData.length > 0) {
-        fetchCandidates(transformedData[0].Username);
+        fetchCandidate(transformedData[0].Username);
       }
     };
 
     fetchCandidates();
-  };
-
-  fetchCandidates();
   }, []);
 
   const handleNextCandidate = () => {
@@ -86,6 +85,7 @@ const CandidateSearch = () => {
       handleNextCandidate();
     }
   };
+
   return (
     <div>
       <h1>Candidate Search</h1>

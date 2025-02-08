@@ -1,15 +1,15 @@
 import type React from 'react';
 import type Candidate from "../interfaces/Candidate.interface";
-import { FcPlus, FsCancel } from 'react-icons/fc';
+import { FcCancel, FcPlus } from 'react-icons/fc';
 
 interface CandidateCardProps {
     currentCandidate: Candidate;
     addToSavedCandidates?: (() => void) | null;
     onCandidateList?: boolean | null;
     removeFromStorage?: (
-        e: React.MouseEvent<SVGSVGElement, MouseEvent>
-    currentlyOnCandidateList: boolean | null | undefined    
-    title: string | null
+        e: React.MouseEvent<SVGSVGElement, MouseEvent>,
+        currentlyOnCandidateList: boolean | null | undefined,    
+        title: string | null
     ) => void | null;
 };
 
