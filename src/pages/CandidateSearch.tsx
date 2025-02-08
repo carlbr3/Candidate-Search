@@ -52,7 +52,9 @@ const CandidateSearch = () => {
     };
 
     fetchCandidates();
-  }
+  };
+
+  fetchCandidates();
   }, []);
 
   const handleNextCandidate = () => {
