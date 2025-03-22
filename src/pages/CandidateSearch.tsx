@@ -3,6 +3,16 @@ import { searchGithub, searchGithubUser } from '../api/API';
 import CandidateCard from '../components/CandidateCard';
 import type Candidate from '../interfaces/Candidate.interface';
 
+type searchGithubUser = {
+  name: string | null;
+  login: string;
+  location: string | null;
+  avatar_url: string;
+  email: string | null;
+  html_url: string;
+  company: string | null;
+};
+
 const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null);
@@ -60,7 +70,9 @@ const CandidateSearch = () => {
     const nextIndex = currentIndex + 1;
     if (nextIndex < candidates.length) {
       setCurrentIndex(nextIndex);
-      fetchCandidate(candidates[nextIndex].Username);
+      if (candidates[nextIndex].Username) {
+        fetchCandidate(candidates[nextIndex].Username);
+      }
     } else {
       //display message indicating that there are no more candidates.
       setNoMoreCandidates(true);
@@ -77,8 +89,9 @@ const CandidateSearch = () => {
     }
   };
 
-  const removeFromStorage = (e: React.MouseEvent<SVGSVGElement, MouseEvent>, currentlyOnCandidateList: boolean | null | undefined, title: string | null) => {
-    if (currentCandidate) {
+  const removeFromStorage = (e: React.MouseEvent<SVGSVGElement, MouseEvent>, title: string | null) => {
+    e.preventDefault();
+    if (currentCandidate && title) {
       const updatedSavedCandidates = savedCandidates.filter(c => c.Username !== currentCandidate.Username);
       setSavedCandidates(updatedSavedCandidates);
       localStorage.setItem('savedCandidates', JSON.stringify(updatedSavedCandidates));

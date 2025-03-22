@@ -15,7 +15,7 @@ const SavedCandidates = () => {
     // setSavedCandidates(response.data);
   }, []);
 
-  const handleDelete = (username:string) => {
+  const handleDelete = (username:string | null) => {
     const updatedSavedCandidates = savedCandidates.filter((candidate) => candidate.Username !== username);
     setSavedCandidates(updatedSavedCandidates);
     localStorage.setItem("savedCandidates", JSON.stringify(updatedSavedCandidates));
@@ -48,7 +48,7 @@ const SavedCandidates = () => {
                   <td>{candidate.Email}</td>
                   <td>{candidate.Company}</td>
                   <td>
-                    <a href={candidate.Html_url ?? undefined} target="_blank" rel="noreferrer">
+                    <a href={candidate.Html_url ? String(candidate.Html_url) : undefined} target="_blank" rel="noreferrer">
                       View Profile
                     </a>
                   </td>
