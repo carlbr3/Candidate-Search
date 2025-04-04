@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { searchGithub, searchGithubUser } from '../api/API';
-import CandidateCard from '../components/CandidateCard';
+import CandidateDisplay from '../components/CandidateDisplay';
 import type Candidate from '../interfaces/Candidate.interface';
 
-type searchGithubUser = {
+type GithubUser = {
   name: string | null;
   login: string;
   location: string | null;
@@ -23,14 +23,14 @@ const CandidateSearch = () => {
     return saved ? JSON.parse(saved) : [];
   });
   const [noMoreCandidates, setNoMoreCandidates] = useState<boolean>(false);
-  
+
   const fetchCandidate = async (username: string) => {
     setLoading(true);
     const user = await searchGithubUser(username);
     console.log('User data:', user);
     const candidateData: Candidate = {
       Name: user.name || "No Name Provided",
-      Username: user.login ||"No userName Provided",
+      Username: user.login || "No userName Provided",
       Location: user.location || "No Location Provided",
       Avatar: user.avatar_url || "No Avatar Provided",
       Email: user.email || "No Email Provided",
@@ -45,7 +45,7 @@ const CandidateSearch = () => {
     const fetchCandidates = async () => {
       setLoading(true);
       const data = await searchGithub();
-      const transformedData = data.map((user: any) => ({
+      const transformedData = data.map((user: GithubUser) => ({
         Name: user.name || "No Name Provided",
         Username: user.login || "No Login Provided",
         Location: user.location || "No Location Provided",
@@ -68,13 +68,11 @@ const CandidateSearch = () => {
 
   const handleNextCandidate = () => {
     const nextIndex = currentIndex + 1;
-    if (nextIndex < candidates.length) {
+    if (nextIndex < candidates.length && candidates[nextIndex] && candidates[nextIndex].Username) {
       setCurrentIndex(nextIndex);
-      if (candidates[nextIndex].Username) {
-        fetchCandidate(candidates[nextIndex].Username);
-      }
+      fetchCandidate(candidates[nextIndex].Username as string);
     } else {
-      //display message indicating that there are no more candidates.
+      // Display message indicating that there are no more candidates.
       setNoMoreCandidates(true);
       setCurrentCandidate(null);
     }
@@ -89,9 +87,8 @@ const CandidateSearch = () => {
     }
   };
 
-  const removeFromStorage = (e: React.MouseEvent<SVGSVGElement, MouseEvent>, title: string | null) => {
-    e.preventDefault();
-    if (currentCandidate && title) {
+  const removeFromStorage = () => {
+    if (currentCandidate) {
       const updatedSavedCandidates = savedCandidates.filter(c => c.Username !== currentCandidate.Username);
       setSavedCandidates(updatedSavedCandidates);
       localStorage.setItem('savedCandidates', JSON.stringify(updatedSavedCandidates));
@@ -105,11 +102,11 @@ const CandidateSearch = () => {
       {loading ? (
         <p>Loading...</p>
       ) : noMoreCandidates ? (
-      <p>No further candidates Available.</p>
+        <p>No further candidates available.</p>
       ) : (
         currentCandidate && (
           <div>
-            <CandidateCard
+            <CandidateDisplay
               currentCandidate={currentCandidate}
               addToSavedCandidates={addToSavedCandidates}
               onCandidateList={true}
@@ -121,6 +118,5 @@ const CandidateSearch = () => {
     </div>
   );
 };
-
 
 export default CandidateSearch;
