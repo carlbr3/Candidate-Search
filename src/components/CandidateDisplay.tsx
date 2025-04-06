@@ -22,7 +22,7 @@ const CandidateCard = ({
   return (
     <>
       {currentCandidate.Username ? (
-        <section className="candidateCard">
+        <section className="candidateDisplay">
           <figure>
             <img
               src={`${currentCandidate.Avatar}`}
